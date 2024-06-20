@@ -1,0 +1,40 @@
+{
+  "name": "be",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc-alias",
+    "start": "node --env-file=.env dist/index.js",
+    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
+  },
+  "engines": {
+    "node": "^20"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/awilix": "^5.1.0",
+    "@fastify/request-context": "^5.1.0",
+    "@fastify/type-provider-typebox": "^4.0.0",
+    "@prisma/client": "^5.15.1",
+    "@sinclair/typebox": "^0.32.32",
+    "@types/jsonwebtoken": "^9.0.6",
+    "awilix": "^10.0.2",
+    "fastify": "^4.28.0",
+    "fastify-plugin": "^4.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "oxide.ts": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "prettier": "^3.3.2",
+    "prisma": "^5.15.1",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  }
+}
