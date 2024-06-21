@@ -6,6 +6,7 @@ export type UserEntityProps = {
   username: string
   email?: string
   picture?: string
+  following?: string[]
 }
 
 export class UserEntity extends BaseEntity<UserEntityProps> {
@@ -31,5 +32,9 @@ export class UserEntity extends BaseEntity<UserEntityProps> {
 
   get picture(): string | undefined {
     return this.props.picture
+  }
+
+  get following(): string[] | undefined {
+    return this.props.following
   }
 }

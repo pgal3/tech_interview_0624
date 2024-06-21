@@ -4,7 +4,6 @@ import { AwilixRegistrable } from "@libs/common/interfaces/awilix-registrable.in
 import { UserEntity } from "src/domain/entities/userEntity"
 
 export const authPort = Symbol.for("authPort")
-
 export interface AuthPort extends AwilixRegistrable {
   RegisterUser(
     username: string,

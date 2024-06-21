@@ -1,6 +1,13 @@
 import { UserRole } from "@domain/enums/userRoleEnum"
 import { LoginRequest } from "@api/dtos/request/loginRequest"
 import { RegistrationRequest } from "@api/dtos/request/registrationRequest"
+import { LoginResponse } from "@api/dtos/response/loginResponse"
+import { UserResponse } from "@api/dtos/response/userResponse"
+import { UpdateUserRequest } from "@api/dtos/request/updateUser.request"
+import { CreatePostRequest } from "@api/dtos/request/createPostRequest"
+import { GetPostResponse } from "@api/dtos/response/getPostResponse"
+import { GetUsersResponse } from "@api/dtos/response/getUsersResponse"
+import { GetUsersQueryString } from "@api/dtos/request/getAllUsersRequest"
 
 export const Routes = {
   REGISTRATION: {
@@ -13,27 +20,67 @@ export const Routes = {
   LOGIN: {
     BASE: "/login",
     REQUEST: LoginRequest,
-    RESPONSE: {}
+    RESPONSE: {
+      200: LoginResponse,
+    }
   },
   USERS: {
-    CREATE: {
-      BASE: "/users"
-    },
     GET_ALL: {
-      BASE: "/users",
-      ROLES: [UserRole.ADMIN]
+      BASE: "/users/all",
+      QUERY: GetUsersQueryString,
+      ROLES: [UserRole.ADMIN],
+      RESPONSE: {
+        200: GetUsersResponse
+      }
     },
     GET: {
       BASE: "/users",
-      PARAMS: {
-        USER_ID: "userId"
+      RESPONSE: {
+        200: UserResponse
       }
     },
-    UPDATE: {},
-    DELETE: {}
+    UPDATE: {
+      BASE: "/users",
+      REQUEST: UpdateUserRequest,
+      RESPONSE: {
+        200: UserResponse
+      }
+    },
+    DELETE: {
+       BASE: "/users",
+       RESPONSE: {
+        204: {}
+      }
+    },
+    GET_SELECTED: {
+      BASE: "/users",
+      PARAMS: {
+        USER_ID: "userId"
+      },
+      ROLES: [UserRole.ADMIN]
+    },
+    DELETE_SELECTED: {
+      BASE: "/users",
+      PARAMS: {
+        USER_ID: "userId"
+      },
+      ROLES: [UserRole.ADMIN]
+    }
   },
   POSTS: {
-    CREATE: {},
+    CREATE: {
+      BASE: "/users/posts",
+      REQUEST: CreatePostRequest,
+      RESPONSE: {
+        201: {}
+      }
+    },
+    GET: {
+      BASE: "/users/posts",
+      RESPONSE: {
+        200: GetPostResponse
+      }
+    },
     DELETE: {}
   }
 }

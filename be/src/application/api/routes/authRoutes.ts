@@ -6,8 +6,9 @@ import { InternalServerException } from "@api/exceptions/internalServerException
 import { LoginRequestType } from "@api/dtos/request/loginRequest"
 import { BadRequestException } from "@api/exceptions/badRequestException"
 import { generateToken } from "@libs/auth/jwtUtils"
+import { mapTokenPayload } from "@api/mappers/authRoutesMappers"
 
-export const CreateAuthRoutes = (fastify: FastifyInstance) => {
+export const createAuthRoutes = (fastify: FastifyInstance) => {
   fastify.post<{ Body: RegistrationRequestType }>(
     Routes.REGISTRATION.BASE,
     {
@@ -22,9 +23,9 @@ export const CreateAuthRoutes = (fastify: FastifyInstance) => {
       const port = req.diScope.resolve<AuthPort>(authPort)
       const result = await port.RegisterUser(username, password, role)
       if (result.isErr()) {
-        return new InternalServerException(result.unwrapErr())
+        throw new InternalServerException(result.unwrapErr())
       }
-      return res.code(201)
+      return res.code(201).send()
     }
   )
 
@@ -42,10 +43,10 @@ export const CreateAuthRoutes = (fastify: FastifyInstance) => {
       const port = req.diScope.resolve<AuthPort>(authPort)
       const result = await port.LoginUser(username, password)
       if (result.isErr()) {
-        return new BadRequestException(result.unwrapErr())
+        throw new BadRequestException(result.unwrapErr())
       }
-      const token = generateToken(result.unwrap())
-      res.status(200).send({ access_token: token })
+      const tokenPayload = mapTokenPayload(result.unwrap())
+      res.status(200).send({ access_token: generateToken(tokenPayload) })
     }
   )
 }

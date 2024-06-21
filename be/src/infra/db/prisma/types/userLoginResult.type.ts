@@ -1,11 +1,11 @@
-export type UserLoginQueryResult = {
+export type UserLoginResult = {
   id: string
+  role: string
   UserAuth: {
     id: number
     username: string
     hash: string
     salt: string
-    role: number
     createdAt: Date
     updatedAt: Date
   }

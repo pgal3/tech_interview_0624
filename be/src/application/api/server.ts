@@ -3,15 +3,18 @@ import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox"
 import { diContainer, fastifyAwilixPlugin } from "@fastify/awilix"
 import { PrismaClient } from "@prisma/client"
 import { asClass, asFunction, Lifetime } from "awilix"
-import { authPlugin } from "./plugins/authPlugin"
 import { fastifyRequestContext } from "@fastify/request-context"
 import { AuthPgAdapter } from "src/infra/db/authPgAdapter"
+import { createAuthRoutes } from "./routes/authRoutes"
+import { authPort } from "./ports/authPort"
+import { userPort } from "./ports/userPort"
+import { UserPgAdapter } from "@infra/db/userPgAdapter"
+import { createUsersRoutes } from "./routes/usersRoutes"
 
 export function StartServer(){
-  const server: FastifyInstance = fastify().withTypeProvider<TypeBoxTypeProvider>()
+  const server: FastifyInstance = fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
 
   server.register(fastifyRequestContext)
-  server.register(authPlugin)
   server.register(fastifyAwilixPlugin, {
     disposeOnClose: true,
     disposeOnResponse: true,
@@ -20,17 +23,21 @@ export function StartServer(){
   
   diContainer.register({
     db: asFunction(() => new PrismaClient(), {
-      dispose: async (db) => await db.$disconnect()
-    }),
-    authPort: asClass(AuthPgAdapter, {
       lifetime: Lifetime.SINGLETON,
-      dispose: (module) => module.dispose()
+      dispose: async db => await db.$disconnect()
+    }),
+    [authPort]: asClass(AuthPgAdapter, {
+      lifetime: Lifetime.SINGLETON,
+      dispose: module => module.dispose()
+    }),
+    [userPort]: asClass(UserPgAdapter, {
+      lifetime: Lifetime.SINGLETON,
+      dispose: module => module.dispose()
     })
   })
   
-  server.get("/ping", async (_request, _reply) => {
-    return "pong\n"
-  })
+  createAuthRoutes(server)
+  createUsersRoutes(server)
   
   server.listen({ port: Number(process.env["SERVER_PORT"]) || 3000 }, (err, address) => {
     if (err) {

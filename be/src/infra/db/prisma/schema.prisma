@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    url      = env("POSTGRES_URL")
+    url      = env("PG_DATABASE_URL")
 }
 
 model UserAuth {
@@ -13,7 +13,6 @@ model UserAuth {
     username String @unique
     hash   String
     salt   String
-    role   Int
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
 }
@@ -21,6 +20,7 @@ model UserAuth {
 model Users {
     id        String    @id @default(uuid())
     username  String    @unique
+    role      String
     email     String?
     UserAuth  UserAuth?
     picture   String?

@@ -1,14 +1,14 @@
-import { pbkdf2Sync, randomBytes } from "crypto"
+import { pbkdf2Sync, randomBytes } from "node:crypto"
 
-const SALT_SIZE = 256
+const SALT_SIZE = 50
 const ALGORITHM = "sha512"
 
 export const generateSalt = (): string => {
-  return randomBytes(SALT_SIZE).toString()
+  return randomBytes(SALT_SIZE).toString('base64')
 }
 
 export const hashPassword = (plainPassword: string, salt: string): string => {
-  return pbkdf2Sync(plainPassword, salt, 10000, 60, ALGORITHM).toString()
+  return pbkdf2Sync(plainPassword, salt, 10000, 60, ALGORITHM).toString('base64')
 }
 
 export const checkPassword = (

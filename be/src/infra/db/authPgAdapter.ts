@@ -6,12 +6,15 @@ import { LoginFailedError } from "src/domain/errors/loginFailedError"
 import { UserNotFoundError } from "src/domain/errors/userNotFoundError"
 import { generateSalt, hashPassword, checkPassword } from "@libs/auth/pwdUtils"
 import { Result, Err } from "oxide.ts"
-import { AuthAdapterErrorHandler } from "./handlers/authAdapterErrorHandler"
-import { AuthAdapterSuccessHandler } from "./handlers/authAdapterSuccessHandler"
+import { DbAdapterErrorHandler } from "./handlers/dbAdapterErrorHandler"
 import { isUserLoginQueryResult } from "./prisma/guards/typeGuards"
+import { DbAuthAdapterSuccessHandler } from "./handlers/dbAuthAdapterSuccessHandler"
 
 export class AuthPgAdapter implements AuthPort {
-  constructor(private readonly db: PrismaClient) { }
+  readonly db: PrismaClient
+  constructor({ db }: { db: PrismaClient }) {
+    this.db = db
+  }
 
   async RegisterUser(username: string, password: string, role: UserRole): Promise<Result<UserEntity, Error>> {
     try {
@@ -20,18 +23,18 @@ export class AuthPgAdapter implements AuthPort {
       const result = await this.db.users.create({
         data: {
           username,
+          role,
           UserAuth: {
             create: {
               hash: hashedPassword,
-              salt,
-              role
+              salt
             }
           }
         }
       })
-      return AuthAdapterSuccessHandler.handleRegistrationResult(result, role)
+      return DbAuthAdapterSuccessHandler.handleRegisterUserResult(result)
     } catch (error) {
-      return AuthAdapterErrorHandler.handleError(error)
+      return DbAdapterErrorHandler.handleError(error)
     }
   }
 
@@ -40,6 +43,7 @@ export class AuthPgAdapter implements AuthPort {
       const userInfo = await this.db.users.findUnique({
         select: {
           id: true,
+          role: true,
           UserAuth: true
         },
         where: {
@@ -55,9 +59,9 @@ export class AuthPgAdapter implements AuthPort {
       if (!isValidPassword) {
         return Err(new LoginFailedError())
       }
-      return AuthAdapterSuccessHandler.handleLoginResult(userInfo)
+      return DbAuthAdapterSuccessHandler.handleLoginResult(userInfo)
     } catch (error) {
-      return AuthAdapterErrorHandler.handleError(error)
+      return DbAdapterErrorHandler.handleError(error)
     }
   }
 

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc-alias",
-    "start": "node --env-file=.env dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "start": "node --env-file=.env dist/main.js",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "engines": {
@@ -21,6 +21,7 @@
     "@prisma/client": "^5.15.1",
     "@sinclair/typebox": "^0.32.32",
     "@types/jsonwebtoken": "^9.0.6",
+    "@uploadcare/upload-client": "^6.14.1",
     "awilix": "^10.0.2",
     "fastify": "^4.28.0",
     "fastify-plugin": "^4.5.1",
@@ -33,7 +34,6 @@
     "prisma": "^5.15.1",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }

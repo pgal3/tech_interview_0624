@@ -9,7 +9,7 @@ import { UnknownError } from "src/domain/errors/unknownError"
 import { ValidationError } from "src/domain/errors/validationError"
 import { Err } from "oxide.ts"
 
-export class AuthAdapterErrorHandler {
+export class DbAdapterErrorHandler {
   static handleError(error: unknown): Err<Error> {
     if (error instanceof PrismaClientInitializationError) {
       return Err(new InternalError())
