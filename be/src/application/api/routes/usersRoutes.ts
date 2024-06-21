@@ -1,11 +1,13 @@
 import { Routes } from "@api/config/api-routes"
 import { GetUsersQueryStringType } from "@api/dtos/request/getAllUsersRequest"
-import { UpdateUserRequestType } from "@api/dtos/request/updateUser.request"
+import { UpdateUserRequest, UpdateUserRequestType } from "@api/dtos/request/updateUser.request"
+import { BadRequestException } from "@api/exceptions/badRequestException"
 import { ForbiddenException } from "@api/exceptions/forbiddenException"
 import { InternalServerException } from "@api/exceptions/internalServerException"
 import { authHook } from "@api/hooks/authHook"
 import { roleGuardHook } from "@api/hooks/roleGuardHook"
 import { mapGetUserResponse } from "@api/mappers/userRoutesMappers"
+import { FilePort, filePort } from "@api/ports/filePort"
 import { UserPort, userPort } from "@api/ports/userPort"
 import { UpdatableUserInfo } from "@domain/value-objects/updatableUserInfo"
 import { diContainer } from "@fastify/awilix"
@@ -13,15 +15,16 @@ import { requestContext } from "@fastify/request-context"
 import { FastifyInstance } from "fastify"
 
 export const createUsersRoutes = (fastify: FastifyInstance) => {
+    
     fastify.get(Routes.USERS.GET.BASE, {
         onRequest: authHook,
         schema: {
             response: Routes.USERS.GET.RESPONSE
         }
     }, async (_req, res) => {
-        const user = requestContext.get("consumer")
+        const {uid} = requestContext.get("consumer")
         const port = diContainer.resolve<UserPort>(userPort)
-        const userInfo = await port.GetUser(user.uid)
+        const userInfo = await port.GetUser(uid)
         if(userInfo.isErr()){
             throw new InternalServerException(userInfo.unwrapErr())
         }
@@ -53,13 +56,37 @@ export const createUsersRoutes = (fastify: FastifyInstance) => {
         }
     }, async (req, res ) => {
         const { username, email } = req.body
-        const consumer = requestContext.get("consumer")
+        const {uid} = requestContext.get("consumer")
         const port = diContainer.resolve<UserPort>(userPort)
-        const updatedUser = await port.UpdateUser(consumer.uid, new UpdatableUserInfo({username, email}))
+        const updatedUser = await port.UpdateUser(uid, new UpdatableUserInfo({username, email}))
         if(updatedUser.isErr()){
             throw new InternalServerException(updatedUser.unwrapErr())
         }
         return res.status(200).send(mapGetUserResponse(updatedUser.unwrap()))
+    })
+
+    fastify.put(Routes.USERS.UPDATE_PICTURE.BASE, {
+        onRequest: authHook,
+        schema: {
+            response: Routes.USERS.UPDATE_PICTURE.RESPONSE
+        }
+    }, async (req, res ) => {
+        if(!req.isMultipart()){
+            throw new BadRequestException()
+        }
+        const { uid } = requestContext.get("consumer")
+        const data = await req.file()
+        const fport = diContainer.resolve<FilePort>(filePort)
+        const dbport = diContainer.resolve<UserPort>(userPort)
+        const fileId = await fport.Save(uid, data)
+        if(fileId.isErr()){
+            throw new InternalServerException(fileId.unwrapErr())
+        }
+        const updatedUser = await dbport.UpdateUser(uid, new UpdatableUserInfo({ picture: fileId.unwrap() }))
+        if(updatedUser.isErr()){
+            throw new InternalServerException(updatedUser.unwrapErr())
+        }
+        return res.status(201).send(mapGetUserResponse(updatedUser.unwrap()))
     })
 
     fastify.delete(`${Routes.USERS.DELETE.BASE}`, {

@@ -8,8 +8,8 @@ import { isUserQueryResult } from "./prisma/guards/typeGuards"
 import { DbAdapterErrorHandler } from "./handlers/dbAdapterErrorHandler"
 import { UpdatableUserInfo } from "@domain/value-objects/updatableUserInfo"
 
-export class UserPgAdapter implements UserPort {
-    readonly db: PrismaClient
+export class PgUserPortAdapter implements UserPort {
+    protected readonly db: PrismaClient
   constructor({ db }: { db: PrismaClient }) {
     this.db = db
   }
@@ -59,11 +59,12 @@ export class UserPgAdapter implements UserPort {
 
   async UpdateUser(userId: string, info: UpdatableUserInfo): Promise<Result<UserEntity, Error>> {
       try {
-        const { username: newUsername, email: newEmail } = info
+        const { username: newUsername, email: newEmail, picture: newPicture} = info
         const updatedUser = await this.db.users.update({
             data: {
                 ...(newUsername ? { username: newUsername} : {}),
                 ...(newEmail ? {email: newEmail} : {}),
+                ...(newPicture ? {picture: newPicture} : {}),
             },
             where: {
                 id: userId

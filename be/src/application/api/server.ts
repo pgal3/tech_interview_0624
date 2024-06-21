@@ -4,16 +4,21 @@ import { diContainer, fastifyAwilixPlugin } from "@fastify/awilix"
 import { PrismaClient } from "@prisma/client"
 import { asClass, asFunction, Lifetime } from "awilix"
 import { fastifyRequestContext } from "@fastify/request-context"
-import { AuthPgAdapter } from "src/infra/db/authPgAdapter"
 import { createAuthRoutes } from "./routes/authRoutes"
 import { authPort } from "./ports/authPort"
 import { userPort } from "./ports/userPort"
-import { UserPgAdapter } from "@infra/db/userPgAdapter"
 import { createUsersRoutes } from "./routes/usersRoutes"
+import { PgAuthPortAdapter } from "@infra/db/pgAuthPortAdapter"
+import { PgUserPortAdapter } from "@infra/db/pgUserPortAdapter"
+import { fastifyMultipart } from '@fastify/multipart'
+import { filePort } from "./ports/filePort"
+import { CloudinaryFilePortAdapter } from "@infra/cloudinary/cloudinaryFilePortAdapter"
+import { v2 as cloudinary } from 'cloudinary'
 
 export function StartServer(){
   const server: FastifyInstance = fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
 
+  server.register(fastifyMultipart)
   server.register(fastifyRequestContext)
   server.register(fastifyAwilixPlugin, {
     disposeOnClose: true,
@@ -26,11 +31,25 @@ export function StartServer(){
       lifetime: Lifetime.SINGLETON,
       dispose: async db => await db.$disconnect()
     }),
-    [authPort]: asClass(AuthPgAdapter, {
+    fileClient: asFunction(() => {
+      cloudinary.config({
+        cloud_name: process.env["CLOUDINARY_CLOUD_NAME"], 
+        api_key: process.env["CLOUDINARY_API_KEY"], 
+        api_secret: process.env["CLOUDINARY_API_SECRET"]
+      })
+      return cloudinary
+    }, {
+      lifetime: Lifetime.SINGLETON,
+    }),
+    [authPort]: asClass(PgAuthPortAdapter, {
       lifetime: Lifetime.SINGLETON,
       dispose: module => module.dispose()
     }),
-    [userPort]: asClass(UserPgAdapter, {
+    [userPort]: asClass(PgUserPortAdapter, {
+      lifetime: Lifetime.SINGLETON,
+      dispose: module => module.dispose()
+    }),
+    [filePort]: asClass(CloudinaryFilePortAdapter, {
       lifetime: Lifetime.SINGLETON,
       dispose: module => module.dispose()
     })

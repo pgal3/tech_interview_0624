@@ -10,8 +10,8 @@ import { DbAdapterErrorHandler } from "./handlers/dbAdapterErrorHandler"
 import { isUserLoginQueryResult } from "./prisma/guards/typeGuards"
 import { DbAuthAdapterSuccessHandler } from "./handlers/dbAuthAdapterSuccessHandler"
 
-export class AuthPgAdapter implements AuthPort {
-  readonly db: PrismaClient
+export class PgAuthPortAdapter implements AuthPort {
+  protected readonly db: PrismaClient
   constructor({ db }: { db: PrismaClient }) {
     this.db = db
   }

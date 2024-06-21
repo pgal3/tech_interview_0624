@@ -1,1 +1,1 @@
-export const DEFAULT_PICTURE_URL = "https://picsum.photos/200"
+export const DEFAULT_PICTURE_ID = "samples/animals/cat"

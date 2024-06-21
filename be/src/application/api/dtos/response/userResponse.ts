@@ -1,11 +1,10 @@
 import { Static, Type } from "@sinclair/typebox"
-import { DEFAULT_PICTURE_URL } from "@api/constants/constants"
 
 export const UserResponse = Type.Object({
-  id: Type.String({ format: "uuid" }),
-  username: Type.String(),
-  email: Type.Optional(Type.String({ format: "email" })),
-  picture: Type.String({ format: "hostname", default: DEFAULT_PICTURE_URL })
+  id: Type.String({ description: "User's ID", format: "uuid" }),
+  username: Type.String({ description: "User's username" }),
+  email: Type.Optional(Type.String({ description: "User's email", format: "email" })),
+  picture: Type.String({ description: "User's picture url", format: "hostname" })
 })
 
 export type UserResponseType = Static<typeof UserResponse>

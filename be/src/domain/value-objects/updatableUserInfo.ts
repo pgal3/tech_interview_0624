@@ -1,6 +1,7 @@
 type UpdatableProps = {
     username?: string
     email?: string
+    picture?: string
 }
 
 export class UpdatableUserInfo {
@@ -16,5 +17,9 @@ export class UpdatableUserInfo {
 
     get email(): string | undefined {
         return this.props.email
+    }
+
+    get picture(): string | undefined {
+        return this.props.picture
     }
 }

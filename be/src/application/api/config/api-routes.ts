@@ -46,26 +46,19 @@ export const Routes = {
         200: UserResponse
       }
     },
+    UPDATE_PICTURE: {
+      BASE: "/users/picture",
+      REQUEST: UpdateUserRequest,
+      RESPONSE: {
+        200: UserResponse
+      }
+    },
     DELETE: {
        BASE: "/users",
        RESPONSE: {
         204: {}
       }
     },
-    GET_SELECTED: {
-      BASE: "/users",
-      PARAMS: {
-        USER_ID: "userId"
-      },
-      ROLES: [UserRole.ADMIN]
-    },
-    DELETE_SELECTED: {
-      BASE: "/users",
-      PARAMS: {
-        USER_ID: "userId"
-      },
-      ROLES: [UserRole.ADMIN]
-    }
   },
   POSTS: {
     CREATE: {
