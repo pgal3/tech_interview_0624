@@ -8,12 +8,12 @@ import { createAuthRoutes } from "./routes/authRoutes"
 import { authPort } from "./ports/authPort"
 import { userPort } from "./ports/userPort"
 import { createUsersRoutes } from "./routes/usersRoutes"
-import { PgAuthPortAdapter } from "@infra/db/pgAuthPortAdapter"
 import { PgUserPortAdapter } from "@infra/db/pgUserPortAdapter"
 import { fastifyMultipart } from '@fastify/multipart'
 import { filePort } from "./ports/filePort"
 import { CloudinaryFilePortAdapter } from "@infra/cloudinary/cloudinaryFilePortAdapter"
 import { v2 as cloudinary } from 'cloudinary'
+import { PgAuthPortAdapter } from "@infra/db/pgAuthPortAdapter"
 
 export function StartServer(){
   const server: FastifyInstance = fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()

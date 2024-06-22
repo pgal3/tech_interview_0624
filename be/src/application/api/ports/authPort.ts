@@ -1,7 +1,7 @@
 import { Result } from "oxide.ts"
 import { UserRole } from "@domain/enums/userRoleEnum"
 import { AwilixRegistrable } from "@libs/common/interfaces/awilix-registrable.interface"
-import { UserEntity } from "src/domain/entities/userEntity"
+import { UserEntity } from "@domain/entities/userEntity"
 
 export const authPort = Symbol.for("authPort")
 export interface AuthPort extends AwilixRegistrable {

@@ -2,7 +2,7 @@ import { DoneFuncWithErrOrRes, FastifyReply, FastifyRequest } from "fastify"
 import { ForbiddenException } from "@api/exceptions/forbiddenException"
 import { UnauthorizedException } from "@api/exceptions/unauthorizedException"
 import { requestContext } from "@fastify/request-context"
-import { UserRole } from "src/domain/enums/userRoleEnum"
+import { UserRole } from "@domain/enums/userRoleEnum"
 
 export const roleGuardHook =
   (allowedRoles: UserRole[]) => (_req: FastifyRequest, _reply: FastifyReply, done: DoneFuncWithErrOrRes) => {
