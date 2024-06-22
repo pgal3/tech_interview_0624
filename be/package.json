@@ -18,6 +18,8 @@
     "@fastify/awilix": "^5.1.0",
     "@fastify/multipart": "^8.3.0",
     "@fastify/request-context": "^5.1.0",
+    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger-ui": "^4.0.0",
     "@fastify/type-provider-typebox": "^4.0.0",
     "@prisma/client": "^5.15.1",
     "@sinclair/typebox": "^0.32.32",
@@ -36,6 +38,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   }
 }

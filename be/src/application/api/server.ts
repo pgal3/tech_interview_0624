@@ -14,13 +14,16 @@ import { filePort } from "./ports/filePort"
 import { CloudinaryFilePortAdapter } from "@infra/cloudinary/cloudinaryFilePortAdapter"
 import { v2 as cloudinary } from 'cloudinary'
 import { PgAuthPortAdapter } from "@infra/db/pgAuthPortAdapter"
+import { fastifySwagger } from '@fastify/swagger'
+import { fastifySwaggerUi } from '@fastify/swagger-ui'
+import { openAPIdoc } from "./docs/openApi"
 
 export function StartServer(){
   const server: FastifyInstance = fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
-
-  server.register(fastifyMultipart)
-  server.register(fastifyRequestContext)
-  server.register(fastifyAwilixPlugin, {
+  server.register(fastifySwagger, openAPIdoc)
+    .register(fastifyMultipart)
+    .register(fastifyRequestContext)
+    .register(fastifyAwilixPlugin, {
     disposeOnClose: true,
     disposeOnResponse: true,
     strictBooleanEnforced: true
@@ -55,10 +58,11 @@ export function StartServer(){
     })
   })
   
-  createAuthRoutes(server)
-  createUsersRoutes(server)
-  
-  server.listen({ port: Number(process.env["SERVER_PORT"]) || 3000 }, (err, address) => {
+  server.register(createAuthRoutes)
+    .register(createUsersRoutes)
+    .register(fastifySwaggerUi, { routePrefix: "/docs" })
+    
+    .listen({ port: Number(process.env["SERVER_PORT"]) || 3000 }, (err, address) => {
     if (err) {
       console.error(err)
       process.exit(1)

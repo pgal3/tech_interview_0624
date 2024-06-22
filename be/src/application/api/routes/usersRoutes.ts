@@ -14,7 +14,7 @@ import { diContainer } from "@fastify/awilix"
 import { requestContext } from "@fastify/request-context"
 import { FastifyInstance } from "fastify"
 
-export const createUsersRoutes = (fastify: FastifyInstance) => {
+export const createUsersRoutes = async (fastify: FastifyInstance) => {
     
     fastify.get(Routes.USERS.GET.BASE, {
         onRequest: authHook,

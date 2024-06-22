@@ -8,7 +8,7 @@ import { BadRequestException } from "@api/exceptions/badRequestException"
 import { generateToken } from "@libs/auth/jwtUtils"
 import { mapTokenPayload } from "@api/mappers/authRoutesMappers"
 
-export const createAuthRoutes = (fastify: FastifyInstance) => {
+export const createAuthRoutes = async (fastify: FastifyInstance) => {
   fastify.post<{ Body: RegistrationRequestType }>(
     Routes.REGISTRATION.BASE,
     {
