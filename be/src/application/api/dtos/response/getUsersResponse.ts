@@ -1,5 +1,5 @@
-import { Static, Type } from "@sinclair/typebox";
-import { UserResponse } from "./userResponse";
+import { Static, Type } from "@sinclair/typebox"
+import { UserResponse } from "./userResponse"
 
 export const GetUsersResponse = Type.Array(UserResponse)
 

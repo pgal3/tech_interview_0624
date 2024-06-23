@@ -1,3 +1,3 @@
 export interface AwilixRegistrable {
-  dispose(): void
+	dispose(): void
 }

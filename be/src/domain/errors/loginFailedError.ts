@@ -1,5 +1,5 @@
 export class LoginFailedError extends Error {
-  constructor() {
-    super("Login Failed")
-  }
+	constructor() {
+		super("Login Failed")
+	}
 }

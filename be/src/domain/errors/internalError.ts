@@ -1,5 +1,5 @@
 export class InternalError extends Error {
-  constructor() {
-    super("Internal Error")
-  }
+	constructor() {
+		super("Internal Error")
+	}
 }

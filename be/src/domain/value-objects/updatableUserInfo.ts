@@ -1,25 +1,23 @@
-type UpdatableProps = {
-    username?: string
-    email?: string
-    picture?: string
-}
+import { UserEntityProps } from "@domain/entities/userEntity"
+
+type UpdatableProps = Pick<Partial<UserEntityProps>, "username" | "email" | "picture">
 
 export class UpdatableUserInfo {
-    private readonly props: UpdatableProps
+	private readonly props: UpdatableProps
 
-    constructor(props: UpdatableProps){
-        this.props = props
-    }
+	constructor(props: UpdatableProps) {
+		this.props = props
+	}
 
-    get username(): string | undefined {
-        return this.props.username
-    }
+	get username(): string | undefined {
+		return this.props.username
+	}
 
-    get email(): string | undefined {
-        return this.props.email
-    }
+	get email(): string | undefined {
+		return this.props.email
+	}
 
-    get picture(): string | undefined {
-        return this.props.picture
-    }
+	get picture(): string | undefined {
+		return this.props.picture
+	}
 }

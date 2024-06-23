@@ -29,21 +29,24 @@ model Users {
     followers Follows[] @relation("followers")
     following Follows[] @relation("following")
     posts     Posts[]
+    @@unique([id, username])
 }
 
 model Posts {
     id       String  @id @default(uuid())
     title    String
     content  String?
-    author   Users?   @relation(fields: [authorId], references: [id])
+    author   Users?   @relation(fields: [authorId, authorName], references: [id, username], onUpdate: Cascade, onDelete: NoAction)
     authorId String?
+    authorName String?
+    createdAt  DateTime @default(now())
 }
 
 model Follows {
     followerId  String
-    follower  Users @relation(name: "followers", fields: [followerId], references: [id])
+    follower  Users @relation(name: "followers", fields: [followerId], references: [id], onDelete: Cascade)
     followingId     String
-    following Users  @relation(name: "following", fields: [followingId], references: [id])
+    following Users  @relation(name: "following", fields: [followingId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
     @@id([followerId, followingId])
 }
