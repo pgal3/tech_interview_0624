@@ -3,7 +3,7 @@ import { FastifyRegisterOptions, FastifySchema } from "fastify"
 
 type ConsumeType = "application/json" | "multipart/form-data"
 
-type Tags = "auth" | "user" | "posts" | "following"
+type Tags = "auth" | "user" | "posts" | "followers"
 
 export const openAPIdoc: FastifyRegisterOptions<SwaggerOptions> = {
 	openapi: {
@@ -23,7 +23,7 @@ export const openAPIdoc: FastifyRegisterOptions<SwaggerOptions> = {
 			{ name: "auth", description: "Creation and Login urls" },
 			{ name: "user", description: "User related end-points" },
 			{ name: "posts", description: "Posts related end-points" },
-			{ name: "following", description: "Follow related end-points" }
+			{ name: "followers", description: "Follow related end-points" }
 		],
 		components: {
 			securitySchemes: {

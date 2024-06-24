@@ -9,9 +9,11 @@ import { UnauthorizedException } from "@api/exceptions/unauthorizedException"
 import { authHook } from "@api/hooks/authHook"
 import { mapSearcheablePostFields, mapToPostResponse } from "@api/mappers/postsRoutesMappers"
 import { postPort, PostPort } from "@api/ports/postPort"
+import { PostEntity } from "@domain/entities/postEntity"
 import { UserRole } from "@domain/enums/userRoleEnum"
 import { diContainer } from "@fastify/awilix"
 import { requestContext } from "@fastify/request-context"
+import { QueuePort, queuePort } from "@libs/common/ports/queuePort"
 import { FastifyInstance } from "fastify"
 
 export const createPostsRoutes = async (fastify: FastifyInstance) => {
@@ -31,10 +33,15 @@ export const createPostsRoutes = async (fastify: FastifyInstance) => {
 			const { uid, username } = requestContext.get("consumer")
 			const { title, content } = body
 			const port = req.diScope.resolve<PostPort>(postPort)
+            const queue = req.diScope.resolve<QueuePort>(queuePort)
 			const result = await port.CreatePost(uid, username, title, content)
 			if (result.isErr()) {
 				throw new InternalServerException(result.unwrapErr())
 			}
+            const queuing = await queue.send<PostEntity>(process.env["POSTS_QUEUE"], result.unwrap())
+            if(queuing.isErr()){
+                console.warn("Error in queuing the post")
+            }
 			return res.code(201).send()
 		}
 	)

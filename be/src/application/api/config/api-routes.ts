@@ -9,6 +9,8 @@ import { GetUsersResponse } from "@api/dtos/response/getUsersResponse"
 import { GetUsersQueryString } from "@api/dtos/request/getAllUsersRequest"
 import { SearchPostsQueryString } from "@api/dtos/request/searchPostsRequest"
 import { SearchPostsResponse } from "@api/dtos/response/searchPostsResponse"
+import { FollowRequest } from "@api/dtos/request/followRequest"
+import { GetFollowersResponse } from "@api/dtos/response/getFollowersResponse"
 
 export const Routes = {
 	REGISTRATION: {
@@ -97,5 +99,34 @@ export const Routes = {
 				}
 			}
 		}
+	},
+	FOLLOWS: {
+		FOLLOW: {
+			BASE: "/users/follow",
+			REQUEST: FollowRequest,
+			RESPONSE: {
+				201: {
+					type: "null",
+					description: "Following started"
+				}
+			}
+		},
+		UNFOLLOW: {
+			BASE: "/users/follow",
+			REQUEST: FollowRequest,
+			RESPONSE: {
+				204: {
+					type: "null",
+					description: "Following started"
+				}
+			}
+		},
+		GET_FOLLOWERS: {
+			BASE: "/users/followers",
+			RESPONSE: {
+				200: GetFollowersResponse
+			}
+		},
+		GET_FOLLOWINGS: {}
 	}
 }

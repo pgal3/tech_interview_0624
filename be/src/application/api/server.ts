@@ -20,14 +20,22 @@ import { openAPIdoc } from "./docs/openApi"
 import { createPostsRoutes } from "./routes/postsRoutes"
 import { postPort } from "./ports/postPort"
 import { PgPostPortAdapter } from "@infra/db/pgPostPortAdapter"
+import { RabbitMQQueuePortAdapter } from "@infra/rabbitMQ/rabbitMQQueuePortAdapter";
+import { createFollowRoutes } from "./routes/followRoutes"
+import { followPort } from "./ports/followPort"
+import { PgFollowPortAdapter } from "@infra/db/pgFollowPortAdapter"
+import { queuePort } from "@libs/common/ports/queuePort"
 
 export function StartServer() {
 	const server: FastifyInstance = fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
-	server.register(fastifySwagger, openAPIdoc).register(fastifyMultipart).register(fastifyRequestContext).register(fastifyAwilixPlugin, {
-		disposeOnClose: true,
-		disposeOnResponse: true,
-		strictBooleanEnforced: true
-	})
+	server.register(fastifySwagger, openAPIdoc)
+		.register(fastifyMultipart)
+		.register(fastifyRequestContext)
+		.register(fastifyAwilixPlugin, {
+			disposeOnClose: true,
+			disposeOnResponse: true,
+			strictBooleanEnforced: true
+		})
 
 	diContainer.register({
 		db: asFunction(() => new PrismaClient(), {
@@ -62,6 +70,14 @@ export function StartServer() {
 		[filePort]: asClass(CloudinaryFilePortAdapter, {
 			lifetime: Lifetime.SINGLETON,
 			dispose: module => module.dispose()
+		}),
+		[followPort]: asClass(PgFollowPortAdapter, {
+			lifetime: Lifetime.SINGLETON,
+			dispose: module => module.dispose()
+		}),
+		[queuePort]: asClass(RabbitMQQueuePortAdapter, {
+			lifetime: Lifetime.SINGLETON,
+			dispose: async module => await module.dispose()
 		})
 	})
 
@@ -69,6 +85,7 @@ export function StartServer() {
 		.register(createAuthRoutes)
 		.register(createUsersRoutes)
 		.register(createPostsRoutes)
+		.register(createFollowRoutes)
 		.register(fastifySwaggerUi, { routePrefix: "/docs" })
 
 		.listen({ port: Number(process.env["SERVER_PORT"]) || 3000 }, (err, address) => {

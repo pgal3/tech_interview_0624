@@ -46,7 +46,7 @@ model Follows {
     followerId  String
     follower  Users @relation(name: "followers", fields: [followerId], references: [id], onDelete: Cascade)
     followingId     String
-    following Users  @relation(name: "following", fields: [followingId], references: [id], onDelete: Cascade)
+    following Users  @relation(name: "following", fields: [followingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     createdAt DateTime @default(now())
     @@id([followerId, followingId])
 }
