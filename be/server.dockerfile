@@ -26,4 +26,6 @@ RUN npm ci
 
 COPY --from=builder /usr/src/app/dist ./dist
 
+RUN npx prisma generate
+
 ENTRYPOINT [ "node", "dist/main.js" ]
