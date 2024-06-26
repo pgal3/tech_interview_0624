@@ -1,5 +1,8 @@
 # Readme - Tech Interview
 
+## Current Open Issues 
+- [ ] Error when running the server in docker compose. Error with the prisma client.
+
 ## Introduction
 This project is the result of a technical challenge. Some assumptions where made when requirements were not completely clear. 
 ### Idea
@@ -119,6 +122,7 @@ Once deployed, a link to a test service will be added here.
 ## Possible improvements and tech debt
 - [ ] create tests for all the features 
 - [ ] enhance the database setup and migration experience
+- [ ] reduce docker container size using multipart builds
 - [ ] enhance get posts functionalities
 - [ ] complete websocket implementation
 - [ ] create a frontend as a PoC
