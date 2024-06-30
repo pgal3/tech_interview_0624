@@ -88,7 +88,7 @@ export function StartServer() {
 		.register(createFollowRoutes)
 		.register(fastifySwaggerUi, { routePrefix: "/docs" })
 
-		.listen({ host: process.env["SERVER_ADDRESS"] || "localhost", port: Number(process.env["SERVER_PORT"]) || 3000 }, (err, address) => {
+		.listen({ host: process.env["HTTP_ADDRESS"], port: Number(process.env["HTTP_PORT"]) }, (err, address) => {
 			if (err) {
 				console.error(err)
 				process.exit(1)

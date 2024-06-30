@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "start": "node --env-file=.env dist/main.js",
+    "start:prod": "npm run migrate && node dist/main.js",
+    "migrate": "npx prisma migrate dev --name init",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "engines": {

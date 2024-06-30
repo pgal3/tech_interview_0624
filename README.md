@@ -1,7 +1,4 @@
-# Readme - Tech Interview
-
-## Current Open Issues 
-- [ ] Error when running the server in docker compose. Error with the prisma client.
+# Tech Interview 0624
 
 ## Introduction
 This project is the result of a technical challenge. Some assumptions where made when requirements were not completely clear. 
@@ -73,12 +70,12 @@ The file have to contain the following variables:
 
 | Variable Name         | Value     | Description                          |
 | --------------------- | --------- | ------------------------------------ |
-| SERVER_ADDRESS        | 0.0.0.0   | Server address                       |
-| SERVER_PORT           | 3000      | Server port                          |
+| HTTP_ADDRESS          | 0.0.0.0   | Server address                       |
+| HTTP_PORT             | 3000      | Server port                          |
 | WEBSOCKET_PORT        | 4000      | Websocket server port                |
 | JWT_SECRET_KEY        | -         | Key needed to sign tokens            |
 | JWT_ISSUER            | -         | Token issuer value                   |
-| PG_DATABASE_URL       | -         | Url to connect to the database       |
+| PG_DATABASE_URL       | -         | Prisma url to connect to the database|
 | POSTGRES_URL          | -         | Postgres container value             |
 | POSTGRES_PORT         | 5432      | Postgres port                        |
 | POSTGRES_DB           | postgres  | Database name                        |
@@ -107,13 +104,7 @@ In order to deploy the service, just run the command:
 `docker compose up -d`
 
 This will automatically spin up the database, queue and server.
-Once the server is up and running, run the following command from the project's be folder:
 
-`npx prisma migrate dev --schema=./src/infra/db/prisma/schema.prisma`
-``
-This will setup and migrate the database tables. 
-
-*Note: the migration and table creation will be changed and automatically performed in the future.*
 ### Cloud Deploy 
 #### Google cloud run
 WIP - Deployment instruction for Google cloud run service are a work in progress and not available at the moment. 
@@ -121,8 +112,8 @@ Once deployed, a link to a test service will be added here.
 
 ## Possible improvements and tech debt
 - [ ] create tests for all the features 
-- [ ] enhance the database setup and migration experience
-- [ ] reduce docker container size using multipart builds
+- [x] ~~enhance the database setup and migration experience~~
+- [x] ~~reduce docker container size using multipart builds~~
 - [ ] enhance get posts functionalities
 - [ ] complete websocket implementation
 - [ ] create a frontend as a PoC
@@ -130,3 +121,9 @@ Once deployed, a link to a test service will be added here.
 - [ ] extract common modules/ports
 - [ ] implement a caching service (redis) for specific endpoints (e.g. get posts and get followers)
 - [ ] deploy the PoC to a public cloud provider or a raspberry Pi with ngrok as a reverse proxy service
+- [ ] Implement the generation of temporary url for profile picture images
+- [ ] Add refresh token and expiration information into login response
+- [ ] Add link to next page in paginated responses
+- [ ] Add Hal links to responses (e.g. to get user info etc)
+- [ ] Improve logging and inserting metrics/prometheus client
+- [ ] Improve error handling with a default error handler middleware to manage controlled errors 
